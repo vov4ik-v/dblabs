@@ -20,15 +20,13 @@ def create_app():
     with app.app_context():
         create_database()
         db.create_all()
-        populate_data()
 
     # Реєструємо маршрути
     register_routes(app)
 
-    # Додаємо простий тестовий маршрут для перевірки роботи додатку
     @app.route('/')
     def home():
-        return jsonify({"status": "Application is running"}), 200
+        return jsonify("Application is running"), 200
 
     return app
 
@@ -45,19 +43,3 @@ def create_database():
     cursor.execute("CREATE DATABASE IF NOT EXISTS restaurant_delivery")
     cursor.close()
     connection.close()
-
-
-def populate_data():
-    # Перевірка наявності SQL-файлу та виконання запитів у контексті SQLAlchemy
-    if os.path.exists('data.sql'):
-        with db.engine.connect() as connection:
-            with open('data.sql', 'r') as sql_file:
-                sql_text = sql_file.read()
-                sql_statements = sql_text.split(';')
-                for statement in sql_statements:
-                    statement = statement.strip()
-                    if statement:
-                        try:
-                            connection.execute(statement)
-                        except Exception as error:
-                            print(f"Error executing SQL statement: {error}")

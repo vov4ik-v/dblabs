@@ -6,10 +6,13 @@ class CustomerAddress(db.Model):
     __tablename__ = 'customer_address'
 
     address_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    customer_id = db.Column(db.Integer, nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.customer_id'), nullable=False)
     address = db.Column(db.String(255), nullable=False)
     city = db.Column(db.String(100), nullable=False)
     zip_code = db.Column(db.String(20), nullable=False)
+
+    customer = db.relationship('Customer', back_populates='addresses')
+    orders = db.relationship('Order', back_populates='address')
 
     def __init__(self, customer_id: int, address: str, city: str, zip_code: str, address_id: int = None):
         self.address_id = address_id

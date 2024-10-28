@@ -10,6 +10,10 @@ class Product(db.Model):
     type = db.Column(db.String(50), nullable=False)
     price = db.Column(db.Float, nullable=False)
 
+    # Relationships
+    ingredients = db.relationship('Ingredient', back_populates='product')
+    order_details = db.relationship('OrderDetail', back_populates='product')
+
     def __init__(self, name: str, type: str, price: float, product_id: int = None):
         self.product_id = product_id
         self.name = name

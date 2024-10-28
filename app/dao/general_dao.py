@@ -21,7 +21,7 @@ class GeneralDAO(ABC):
             with db.session() as session:
                 session.add(obj)
                 session.commit()
-                session.refresh(obj)  # Оновлює об'єкт у сесії для подальшого використання
+                session.refresh(obj)
                 return obj
         except SQLAlchemyError:
             session.rollback()

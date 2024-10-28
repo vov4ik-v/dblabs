@@ -10,6 +10,9 @@ class Addon(db.Model):
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
 
+    order_details = db.relationship('OrderDetail', back_populates='addon')
+
+
     def __init__(self, name: str, price: float, addon_id: int = None):
         self.addon_id = addon_id
         self.name = name

@@ -6,11 +6,15 @@ class OrderDetail(db.Model):
     __tablename__ = 'order_detail'
 
     order_detail_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    order_id = db.Column(db.Integer, nullable=False)
-    product_id = db.Column(db.Integer, nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.order_id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.product_id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)
-    addon_id = db.Column(db.Integer, nullable=True)
+    addon_id = db.Column(db.Integer, db.ForeignKey('addon.addon_id'), nullable=True)
+
+    order = db.relationship('Order', back_populates='order_details')
+    product = db.relationship('Product', back_populates='order_details')
+    addon = db.relationship('Addon', back_populates='order_details')
 
     def __init__(self, order_id: int, product_id: int, quantity: int, price: float, addon_id: int = None, order_detail_id: int = None):
         self.order_detail_id = order_detail_id

@@ -9,6 +9,8 @@ class Courier(db.Model):
     name = db.Column(db.String(100), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
 
+    deliveries = db.relationship('Delivery', back_populates='courier')
+
     def __init__(self, name: str, phone: str, courier_id: int = None):
         self.courier_id = courier_id
         self.name = name

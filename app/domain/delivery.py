@@ -6,11 +6,16 @@ class Delivery(db.Model):
     __tablename__ = 'delivery'
 
     delivery_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    order_id = db.Column(db.Integer, nullable=False)
-    courier_id = db.Column(db.Integer, nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.order_id'), nullable=False)
+    courier_id = db.Column(db.Integer, db.ForeignKey('courier.courier_id'), nullable=False)
     expected_delivery_time = db.Column(db.String(50), nullable=False)
     actual_delivery_time = db.Column(db.String(50), nullable=True)
     delivery_fee = db.Column(db.Float, nullable=False, default=0.0)
+
+    # Relationships
+    order = db.relationship('Order', back_populates='delivery')
+    courier = db.relationship('Courier', back_populates='deliveries')
+
 
     def __init__(self, order_id: int, courier_id: int, expected_delivery_time: str, actual_delivery_time: str = None, delivery_fee: float = 0.0, delivery_id: int = None):
         self.delivery_id = delivery_id

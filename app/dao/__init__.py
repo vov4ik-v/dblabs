@@ -1,4 +1,3 @@
-# Нові DAO-класи для доданих таблиць:
 from .addon_dao import AddonDAO
 from .courier_dao import CourierDAO
 from .customer_dao import CustomerDAO
@@ -11,7 +10,6 @@ from .order_detail_dao import OrderDetailDAO
 from .order_dao import OrderDAO
 
 
-# Ініціалізація нових DAO для нових доменних об'єктів
 
 addon_dao = AddonDAO()
 courier_dao = CourierDAO()

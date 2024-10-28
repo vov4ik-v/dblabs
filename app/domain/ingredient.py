@@ -7,8 +7,10 @@ class Ingredient(db.Model):
 
     ingredient_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False)
-    product_id = db.Column(db.Integer, nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.product_id'), nullable=False)
     weight_grams = db.Column(db.Float, nullable=False)
+
+    product = db.relationship('Product', back_populates='ingredients')
 
     def __init__(self, name: str, product_id: int, weight_grams: float, ingredient_id: int = None):
         self.ingredient_id = ingredient_id

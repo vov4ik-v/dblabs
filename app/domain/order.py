@@ -6,11 +6,17 @@ class Order(db.Model):
     __tablename__ = 'order'
 
     order_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    customer_id = db.Column(db.Integer, nullable=False)
-    address_id = db.Column(db.Integer, nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.customer_id'), nullable=False)
+    address_id = db.Column(db.Integer, db.ForeignKey('customer_address.address_id'), nullable=False)
     order_date = db.Column(db.String(50), nullable=False)
     total_price = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(50), nullable=False)
+
+    customer = db.relationship('Customer', back_populates='orders')
+    address = db.relationship('CustomerAddress', back_populates='orders')
+    cancelled_order = db.relationship('CancelledOrder', back_populates='order', uselist=False)
+    order_details = db.relationship('OrderDetail', back_populates='order')
+    delivery = db.relationship('Delivery', back_populates='order', uselist=False)
 
     def __init__(self, customer_id: int, address_id: int, order_date: str, total_price: float, status: str, order_id: int = None):
         self.order_id = order_id

@@ -6,9 +6,12 @@ class CancelledOrder(db.Model):
     __tablename__ = 'cancelled_order'
 
     cancelled_order_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    order_id = db.Column(db.Integer, nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.order_id'), nullable=False)
     cancel_reason = db.Column(db.String(255), nullable=False)
     cancel_date = db.Column(db.String(50), nullable=False)
+
+    order = db.relationship('Order', back_populates='cancelled_order')
+
 
     def __init__(self, order_id: int, cancel_reason: str, cancel_date: str, cancelled_order_id: int = None):
         self.cancelled_order_id = cancelled_order_id
