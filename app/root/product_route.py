@@ -1,13 +1,23 @@
 from http import HTTPStatus
 from flask import Blueprint, jsonify, Response, request, make_response
-from ..controller import product_controller
-from ..domain.product import Product
+from ..controller.product_controller import ProductController
+from ..domain import Product
 
 product_bp = Blueprint('product', __name__, url_prefix='/products')
+product_controller = ProductController()
 
 @product_bp.route('', methods=['GET'])
 def get_all_products() -> Response:
-    return make_response(jsonify(product_controller.find_all()), HTTPStatus.OK)
+    # Use the method that fetches products with ingredients
+    products = product_controller.find_all_products_with_ingredients()
+    return make_response(jsonify(products), HTTPStatus.OK)
+
+@product_bp.route('/<int:product_id>', methods=['GET'])
+def get_product(product_id: int) -> Response:
+    # Use the method that fetches a single product with ingredients
+    product = product_controller.find_product_with_ingredients(product_id)
+    return make_response(jsonify(product), HTTPStatus.OK)
+
 
 @product_bp.route('', methods=['POST'])
 def create_product() -> Response:
@@ -15,10 +25,6 @@ def create_product() -> Response:
     product = Product.create_from_dto(content)
     product_controller.create(product)
     return make_response(jsonify(product.put_into_dto()), HTTPStatus.CREATED)
-
-@product_bp.route('/<int:product_id>', methods=['GET'])
-def get_product(product_id: int) -> Response:
-    return make_response(jsonify(product_controller.find_by_id(product_id)), HTTPStatus.OK)
 
 @product_bp.route('/<int:product_id>', methods=['PUT'])
 def update_product(product_id: int) -> Response:

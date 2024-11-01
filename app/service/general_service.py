@@ -1,15 +1,14 @@
 from abc import ABC
 from typing import List
 
-
 class GeneralService(ABC):
     _dao = None
 
-    def find_all(self) -> List[object]:
-        return self._dao.find_all()
+    def find_all(self, *relations) -> List[object]:
+        return self._dao.find_all(*relations)
 
-    def find_by_id(self, key: int) -> object:
-        return self._dao.find_by_id(key)
+    def find_by_id_with_relations(self, key: int, *relations) -> object:
+        return self._dao.find_by_id_with_relations(key, *relations)
 
     def create(self, obj: object) -> object:
         return self._dao.create(obj)

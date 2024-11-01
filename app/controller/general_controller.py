@@ -1,42 +1,45 @@
 from abc import ABC
 from typing import List, Dict
-
 from http import HTTPStatus
 from flask import abort
 
+from abc import ABC
+from typing import List, Dict
+from http import HTTPStatus
+from flask import abort
 
 class GeneralController(ABC):
-
     _service = None
 
-    def find_all(self) -> List[object]:
+    def find_all(self, *relations) -> List[object]:
+        """
+        Retrieves all records with optional eager-loaded relationships.
+        """
+        return [obj.put_into_dto() for obj in self._service.find_all(*relations)]
 
-        return list(map(lambda x: x.put_into_dto(), self._service.find_all()))
-
-    def find_by_id(self, key: int) -> object:
-
-        obj = self._service.find_by_id(key)
+    def find_by_id(self, key: int, *relations) -> object:
+        """
+        Retrieves a single record by ID with optional eager-loaded relationships.
+        """
+        obj = self._service.find_by_id_with_relations(key, *relations)
         if obj is None:
             abort(HTTPStatus.NOT_FOUND)
         return obj.put_into_dto()
 
-    def create(self, obj: object) -> object:
 
+    def create(self, obj: object) -> object:
         return self._service.create(obj).put_into_dto()
 
     def create_all(self, obj_list: List[object]) -> List[object]:
-
-        return list(map(lambda x: x.put_into_dto(), self._service.create(obj_list)))
+        return [obj.put_into_dto() for obj in self._service.create_all(obj_list)]
 
     def update(self, key: int, new_obj: object) -> None:
-
         obj = self._service.find_by_id(key)
         if obj is None:
             abort(HTTPStatus.NOT_FOUND)
         self._service.update(key, new_obj)
 
     def patch(self, key: int, value_dict: Dict[str, object]) -> None:
-
         obj = self._service.find_by_id(key)
         if obj is None:
             abort(HTTPStatus.NOT_FOUND)
@@ -44,12 +47,10 @@ class GeneralController(ABC):
             self._service.patch(key, field_name, value)
 
     def delete(self, key: int) -> None:
-
         obj = self._service.find_by_id(key)
         if obj is None:
             abort(HTTPStatus.NOT_FOUND)
         self._service.delete(key)
 
     def delete_all(self) -> None:
-
         self._service.delete_all()

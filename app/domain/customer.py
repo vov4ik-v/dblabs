@@ -22,13 +22,16 @@ class Customer(db.Model):
     def __repr__(self) -> str:
         return f"Customer({self.customer_id}, '{self.name}', '{self.phone}', '{self.email}')"
 
-    def put_into_dto(self) -> Dict[str, Any]:
-        return {
+    def put_into_dto(self, include_addresses: bool = True) -> Dict[str, Any]:
+        dto = {
             'customer_id': self.customer_id,
             'name': self.name,
             'phone': self.phone,
             'email': self.email
         }
+        if include_addresses:
+            dto['addresses'] = [address.put_into_dto() for address in self.addresses]
+        return dto
 
     @staticmethod
     def create_from_dto(dto_dict: Dict[str, Any]) -> Customer:

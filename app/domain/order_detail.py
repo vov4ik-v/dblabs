@@ -27,15 +27,19 @@ class OrderDetail(db.Model):
     def __repr__(self) -> str:
         return f"OrderDetail({self.order_detail_id}, {self.order_id}, {self.product_id}, {self.quantity}, {self.price}, {self.addon_id})"
 
-    def put_into_dto(self) -> Dict[str, Any]:
-        return {
+    def put_into_dto(self, include_product_addon: bool = True) -> Dict[str, Any]:
+        order_detail_dto =  {
             'order_detail_id': self.order_detail_id,
             'order_id': self.order_id,
-            'product_id': self.product_id,
+            'product': self.product.put_into_dto(include_ingredients=False) if include_product_addon and self.product else {'product_id': self.product_id},
             'quantity': self.quantity,
             'price': self.price,
-            'addon_id': self.addon_id
+            'addon': self.addon.put_into_dto() if include_product_addon and self.addon else {'addon_id': self.addon_id}
         }
+        if not include_product_addon:
+            order_detail_dto['url_for_order_detail'] = f"http://127.0.0.1:5000/order_details/{self.order_detail_id}"
+
+        return order_detail_dto
 
     @staticmethod
     def create_from_dto(dto_dict: Dict[str, Any]) -> OrderDetail:

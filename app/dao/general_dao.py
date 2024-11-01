@@ -2,19 +2,31 @@ from abc import ABC
 from typing import List
 from sqlalchemy import inspect
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import Mapper
+from sqlalchemy.orm import joinedload, Mapper
 from app import db
 
 class GeneralDAO(ABC):
     _domain_type = None
 
-    def find_all(self) -> List[object]:
+    def find_all(self, *relations) -> List[object]:
+        """
+        Retrieves all instances of _domain_type with specified relationships eagerly loaded.
+        """
         with db.session() as session:
-            return session.query(self._domain_type).all()
+            query = session.query(self._domain_type)
+            for relation in relations:
+                query = query.options(joinedload(relation))
+            return query.all()
 
-    def find_by_id(self, key: int) -> object:
+    def find_by_id_with_relations(self, key: int, *relations) -> object:
+        """
+        Retrieves a single instance by ID with specified relationships eagerly loaded.
+        """
         with db.session() as session:
-            return session.query(self._domain_type).get(key)
+            query = session.query(self._domain_type)
+            for relation in relations:
+                query = query.options(joinedload(relation))
+            return query.get(key)
 
     def create(self, obj: object) -> object:
         try:

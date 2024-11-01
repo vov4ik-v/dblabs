@@ -1,13 +1,16 @@
 from http import HTTPStatus
 from flask import Blueprint, jsonify, Response, request, make_response
-from ..controller import customer_address_controller
+from ..controller.customer_address_controller import CustomerAddressController
 from ..domain.customer_address import CustomerAddress
 
 customer_address_bp = Blueprint('customer_address', __name__, url_prefix='/customer_addresses')
+customer_address_controller = CustomerAddressController()
 
 @customer_address_bp.route('', methods=['GET'])
 def get_all_customer_addresses() -> Response:
-    return make_response(jsonify(customer_address_controller.find_all()), HTTPStatus.OK)
+    # Load customer relationships for each customer address
+    customer_addresses = customer_address_controller.find_all(CustomerAddress.customer)
+    return make_response(jsonify(customer_addresses), HTTPStatus.OK)
 
 @customer_address_bp.route('', methods=['POST'])
 def create_customer_address() -> Response:
@@ -18,7 +21,9 @@ def create_customer_address() -> Response:
 
 @customer_address_bp.route('/<int:address_id>', methods=['GET'])
 def get_customer_address(address_id: int) -> Response:
-    return make_response(jsonify(customer_address_controller.find_by_id(address_id)), HTTPStatus.OK)
+    # Load customer relationship for a single customer address
+    customer_address = customer_address_controller.find_by_id(address_id, CustomerAddress.customer)
+    return make_response(jsonify(customer_address), HTTPStatus.OK)
 
 @customer_address_bp.route('/<int:address_id>', methods=['PUT'])
 def update_customer_address(address_id: int) -> Response:

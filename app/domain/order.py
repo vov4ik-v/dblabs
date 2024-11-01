@@ -1,6 +1,7 @@
 from __future__ import annotations
-from typing import Dict, Any
+from typing import Dict, Any, List
 from app import db
+
 
 class Order(db.Model):
     __tablename__ = 'order'
@@ -18,7 +19,8 @@ class Order(db.Model):
     order_details = db.relationship('OrderDetail', back_populates='order')
     delivery = db.relationship('Delivery', back_populates='order', uselist=False)
 
-    def __init__(self, customer_id: int, address_id: int, order_date: str, total_price: float, status: str, order_id: int = None):
+    def __init__(self, customer_id: int, address_id: int, order_date: str, total_price: float, status: str,
+                 order_id: int = None):
         self.order_id = order_id
         self.customer_id = customer_id
         self.address_id = address_id
@@ -29,14 +31,26 @@ class Order(db.Model):
     def __repr__(self) -> str:
         return f"Order({self.order_id}, {self.customer_id}, {self.address_id}, '{self.order_date}', {self.total_price}, '{self.status}')"
 
-    def put_into_dto(self) -> Dict[str, Any]:
+    def put_into_dto(self, detailed: bool = True) -> Dict[str, Any]:
+        if not detailed:
+            return {
+                'order_id': self.order_id,
+                'customer_id': self.customer_id,
+                'address_id': self.address_id,
+                'status': self.status,
+                'url_for_order': f"http://127.0.0.1:5000/orders/{self.order_id}",
+            }
+
         return {
             'order_id': self.order_id,
-            'customer_id': self.customer_id,
-            'address_id': self.address_id,
+            'customer': self.customer.put_into_dto(
+                include_addresses=False) if self.customer and detailed else {
+                'customer_id': self.customer_id},
+            'address': self.address.put_into_dto() if self.address else None,
             'order_date': self.order_date,
             'total_price': self.total_price,
-            'status': self.status
+            'status': self.status,
+            'order_details': [detail.put_into_dto(include_product_addon=False) for detail in self.order_details]
         }
 
     @staticmethod

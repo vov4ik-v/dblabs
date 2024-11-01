@@ -1,13 +1,16 @@
 from http import HTTPStatus
 from flask import Blueprint, jsonify, Response, request, make_response
-from ..controller import customer_controller
+from ..controller.customer_controller import CustomerController
 from ..domain.customer import Customer
 
 customer_bp = Blueprint('customer', __name__, url_prefix='/customers')
+customer_controller = CustomerController()
 
 @customer_bp.route('', methods=['GET'])
 def get_all_customers() -> Response:
-    return make_response(jsonify(customer_controller.find_all()), HTTPStatus.OK)
+    # Load addresses relationships for each customer
+    customers = customer_controller.find_all(Customer.addresses)
+    return make_response(jsonify(customers), HTTPStatus.OK)
 
 @customer_bp.route('', methods=['POST'])
 def create_customer() -> Response:
@@ -18,7 +21,9 @@ def create_customer() -> Response:
 
 @customer_bp.route('/<int:customer_id>', methods=['GET'])
 def get_customer(customer_id: int) -> Response:
-    return make_response(jsonify(customer_controller.find_by_id(customer_id)), HTTPStatus.OK)
+    # Load addresses relationship for a single customer
+    customer = customer_controller.find_by_id(customer_id, Customer.addresses)
+    return make_response(jsonify(customer), HTTPStatus.OK)
 
 @customer_bp.route('/<int:customer_id>', methods=['PUT'])
 def update_customer(customer_id: int) -> Response:

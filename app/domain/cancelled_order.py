@@ -12,7 +12,6 @@ class CancelledOrder(db.Model):
 
     order = db.relationship('Order', back_populates='cancelled_order')
 
-
     def __init__(self, order_id: int, cancel_reason: str, cancel_date: str, cancelled_order_id: int = None):
         self.cancelled_order_id = cancelled_order_id
         self.order_id = order_id
@@ -25,9 +24,9 @@ class CancelledOrder(db.Model):
     def put_into_dto(self) -> Dict[str, Any]:
         return {
             'cancelled_order_id': self.cancelled_order_id,
-            'order_id': self.order_id,
             'cancel_reason': self.cancel_reason,
-            'cancel_date': self.cancel_date
+            'cancel_date': self.cancel_date,
+            'order': self.order.put_into_dto(detailed=False) if self.order else None  # Використовуємо `detailed=False`
         }
 
     @staticmethod
@@ -38,3 +37,4 @@ class CancelledOrder(db.Model):
             cancel_reason=dto_dict.get('cancel_reason'),
             cancel_date=dto_dict.get('cancel_date')
         )
+

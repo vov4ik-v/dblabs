@@ -16,7 +16,6 @@ class Delivery(db.Model):
     order = db.relationship('Order', back_populates='delivery')
     courier = db.relationship('Courier', back_populates='deliveries')
 
-
     def __init__(self, order_id: int, courier_id: int, expected_delivery_time: str, actual_delivery_time: str = None, delivery_fee: float = 0.0, delivery_id: int = None):
         self.delivery_id = delivery_id
         self.order_id = order_id
@@ -31,8 +30,8 @@ class Delivery(db.Model):
     def put_into_dto(self) -> Dict[str, Any]:
         return {
             'delivery_id': self.delivery_id,
-            'order_id': self.order_id,
-            'courier_id': self.courier_id,
+            'order': self.order.put_into_dto(detailed=False) if self.order else None,  # Спрощена інформація про замовлення
+            'courier': self.courier.put_into_dto() if self.courier else None,  # Повна інформація про кур'єра
             'expected_delivery_time': self.expected_delivery_time,
             'actual_delivery_time': self.actual_delivery_time,
             'delivery_fee': self.delivery_fee

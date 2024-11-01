@@ -1,13 +1,22 @@
 from http import HTTPStatus
 from flask import Blueprint, jsonify, Response, request, make_response
-from ..controller import order_controller
+from ..controller.order_controller import OrderController
 from ..domain.order import Order
 
 order_bp = Blueprint('order', __name__, url_prefix='/orders')
+order_controller = OrderController()
 
 @order_bp.route('', methods=['GET'])
 def get_all_orders() -> Response:
-    return make_response(jsonify(order_controller.find_all()), HTTPStatus.OK)
+    orders = order_controller.find_all_orders_with_relations()
+    return make_response(jsonify(orders), HTTPStatus.OK)
+
+@order_bp.route('/<int:order_id>', methods=['GET'])
+def get_order(order_id: int) -> Response:
+    order = order_controller.find_order_with_relations(order_id)
+    if order:
+        return make_response(jsonify(order), HTTPStatus.OK)
+    return make_response("Order not found", HTTPStatus.NOT_FOUND)
 
 @order_bp.route('', methods=['POST'])
 def create_order() -> Response:
@@ -15,10 +24,6 @@ def create_order() -> Response:
     order = Order.create_from_dto(content)
     order_controller.create(order)
     return make_response(jsonify(order.put_into_dto()), HTTPStatus.CREATED)
-
-@order_bp.route('/<int:order_id>', methods=['GET'])
-def get_order(order_id: int) -> Response:
-    return make_response(jsonify(order_controller.find_by_id(order_id)), HTTPStatus.OK)
 
 @order_bp.route('/<int:order_id>', methods=['PUT'])
 def update_order(order_id: int) -> Response:

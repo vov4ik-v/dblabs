@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, Any
+from typing import Dict, Any, List
 from app import db
 
 class Product(db.Model):
@@ -23,13 +23,19 @@ class Product(db.Model):
     def __repr__(self) -> str:
         return f"Product({self.product_id}, '{self.name}', '{self.type}', {self.price})"
 
-    def put_into_dto(self) -> Dict[str, Any]:
-        return {
+    def put_into_dto(self, include_ingredients: bool = True) -> Dict[str, Any]:
+        # Контроль за включенням інгредієнтів
+        product_dto = {
             'product_id': self.product_id,
             'name': self.name,
             'type': self.type,
-            'price': self.price
+            'price': self.price,
         }
+        if include_ingredients:
+            product_dto['ingredients'] = [ingredient.put_into_dto() for ingredient in self.ingredients]
+        if not include_ingredients:
+            product_dto['url_for_product'] = f"http://127.0.0.1:5000/products/{self.product_id}"
+        return product_dto
 
     @staticmethod
     def create_from_dto(dto_dict: Dict[str, Any]) -> Product:
