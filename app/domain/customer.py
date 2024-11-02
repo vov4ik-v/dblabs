@@ -10,7 +10,7 @@ class Customer(db.Model):
     phone = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(100), nullable=True)
 
-    addresses = db.relationship('CustomerAddress', back_populates='customer')
+    addresses = db.relationship('CustomerAddress',back_populates='customer')
     orders = db.relationship('Order', back_populates='customer')
 
     def __init__(self, name: str, phone: str, email: str = None, customer_id: int = None):

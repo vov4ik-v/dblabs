@@ -20,7 +20,7 @@ def create_customer() -> Response:
 
 @customer_bp.route('/<int:customer_id>', methods=['GET'])
 def get_customer(customer_id: int) -> Response:
-    customer = customer_controller.find_by_id(customer_id, Customer.addresses)
+    customer = customer_controller.find_by_id_with_relations(customer_id, Customer.addresses)
     return make_response(jsonify(customer), HTTPStatus.OK)
 
 @customer_bp.route('/<int:customer_id>', methods=['PUT'])

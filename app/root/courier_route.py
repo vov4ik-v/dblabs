@@ -21,7 +21,7 @@ def create_courier() -> Response:
 
 @courier_bp.route('/<int:courier_id>', methods=['GET'])
 def get_courier(courier_id: int) -> Response:
-    return make_response(jsonify(courier_controller.find_by_id(courier_id)), HTTPStatus.OK)
+    return make_response(jsonify(courier_controller.find_by_id_with_relations(courier_id)), HTTPStatus.OK)
 
 
 @courier_bp.route('/<int:courier_id>', methods=['PUT'])

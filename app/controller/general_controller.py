@@ -17,7 +17,7 @@ class GeneralController(ABC):
         """
         return [obj.put_into_dto() for obj in self._service.find_all(*relations)]
 
-    def find_by_id(self, key: int, *relations) -> object:
+    def find_by_id_with_relations(self, key: int, *relations) -> object:
         """
         Retrieves a single record by ID with optional eager-loaded relationships.
         """
@@ -34,20 +34,20 @@ class GeneralController(ABC):
         return [obj.put_into_dto() for obj in self._service.create_all(obj_list)]
 
     def update(self, key: int, new_obj: object) -> None:
-        obj = self._service.find_by_id(key)
+        obj = self._service.find_by_id_with_relations(key)
         if obj is None:
             abort(HTTPStatus.NOT_FOUND)
         self._service.update(key, new_obj)
 
     def patch(self, key: int, value_dict: Dict[str, object]) -> None:
-        obj = self._service.find_by_id(key)
+        obj = self._service.find_by_id_with_relations(key)
         if obj is None:
             abort(HTTPStatus.NOT_FOUND)
         for field_name, value in value_dict.items():
             self._service.patch(key, field_name, value)
 
     def delete(self, key: int) -> None:
-        obj = self._service.find_by_id(key)
+        obj = self._service.find_by_id_with_relations(key)
         if obj is None:
             abort(HTTPStatus.NOT_FOUND)
         self._service.delete(key)

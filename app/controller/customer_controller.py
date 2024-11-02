@@ -12,4 +12,4 @@ class CustomerController(GeneralController):
         return self.find_all(Customer.addresses)
 
     def find_customer_with_addresses(self, customer_id: int) -> object:
-        return self.find_by_id(customer_id, Customer.addresses)
+        return self.find_by_id_with_relations(customer_id, Customer.addresses)

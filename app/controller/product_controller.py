@@ -10,4 +10,4 @@ class ProductController(GeneralController):
         return self.find_all(Product.ingredients)
 
     def find_product_with_ingredients(self, product_id: int):
-        return self.find_by_id(product_id, Product.ingredients)
+        return self.find_by_id_with_relations(product_id, Product.ingredients)

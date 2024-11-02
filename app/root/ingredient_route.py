@@ -18,7 +18,7 @@ def create_ingredient() -> Response:
 
 @ingredient_bp.route('/<int:ingredient_id>', methods=['GET'])
 def get_ingredient(ingredient_id: int) -> Response:
-    return make_response(jsonify(ingredient_controller.find_by_id(ingredient_id)), HTTPStatus.OK)
+    return make_response(jsonify(ingredient_controller.find_by_id_with_relations(ingredient_id)), HTTPStatus.OK)
 
 @ingredient_bp.route('/<int:ingredient_id>', methods=['PUT'])
 def update_ingredient(ingredient_id: int) -> Response:

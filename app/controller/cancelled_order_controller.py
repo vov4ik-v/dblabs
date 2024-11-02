@@ -9,4 +9,4 @@ class CancelledOrderController(GeneralController):
         return self.find_all(CancelledOrder.order)
 
     def find_cancelled_order_with_order(self, cancelled_order_id: int):
-        return self.find_by_id(cancelled_order_id, CancelledOrder.order)
+        return self.find_by_id_with_relations(cancelled_order_id, CancelledOrder.order)
