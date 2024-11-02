@@ -8,7 +8,6 @@ customer_controller = CustomerController()
 
 @customer_bp.route('', methods=['GET'])
 def get_all_customers() -> Response:
-    # Load addresses relationships for each customer
     customers = customer_controller.find_all(Customer.addresses)
     return make_response(jsonify(customers), HTTPStatus.OK)
 
@@ -21,7 +20,6 @@ def create_customer() -> Response:
 
 @customer_bp.route('/<int:customer_id>', methods=['GET'])
 def get_customer(customer_id: int) -> Response:
-    # Load addresses relationship for a single customer
     customer = customer_controller.find_by_id(customer_id, Customer.addresses)
     return make_response(jsonify(customer), HTTPStatus.OK)
 

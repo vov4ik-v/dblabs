@@ -8,13 +8,11 @@ product_controller = ProductController()
 
 @product_bp.route('', methods=['GET'])
 def get_all_products() -> Response:
-    # Use the method that fetches products with ingredients
     products = product_controller.find_all_products_with_ingredients()
     return make_response(jsonify(products), HTTPStatus.OK)
 
 @product_bp.route('/<int:product_id>', methods=['GET'])
 def get_product(product_id: int) -> Response:
-    # Use the method that fetches a single product with ingredients
     product = product_controller.find_product_with_ingredients(product_id)
     return make_response(jsonify(product), HTTPStatus.OK)
 

@@ -8,7 +8,6 @@ cancelled_order_controller = CancelledOrderController()
 
 @cancelled_order_bp.route('', methods=['GET'])
 def get_all_cancelled_orders() -> Response:
-    # Використовуємо метод, який отримує всі скасовані замовлення з інформацією про замовлення
     cancelled_orders = cancelled_order_controller.find_all_cancelled_orders_with_order()
     return make_response(jsonify(cancelled_orders), HTTPStatus.OK)
 
