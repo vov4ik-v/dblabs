@@ -44,7 +44,7 @@ class Order(db.Model):
         return {
             'order_id': self.order_id,
             'customer': self.customer.put_into_dto(
-                include_addresses=False) if self.customer and detailed else {
+                include_addresses=False, include_favorite_couriers = False) if self.customer and detailed else {
                 'customer_id': self.customer_id},
             'address': self.address.put_into_dto() if self.address else None,
             'order_date': self.order_date,

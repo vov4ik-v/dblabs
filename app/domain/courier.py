@@ -2,6 +2,13 @@ from __future__ import annotations
 from typing import Dict, Any
 from app import db
 
+customer_courier = db.Table(
+    'customer_courier',  # Назва таблиці
+    db.Column('customer_id', db.Integer, db.ForeignKey('customer.customer_id'), primary_key=True),
+    db.Column('courier_id', db.Integer, db.ForeignKey('courier.courier_id'), primary_key=True)
+)
+
+
 class Courier(db.Model):
     __tablename__ = 'courier'
 
@@ -11,20 +18,22 @@ class Courier(db.Model):
 
     deliveries = db.relationship('Delivery', back_populates='courier')
 
-    def __init__(self, name: str, phone: str, courier_id: int = None):
-        self.courier_id = courier_id
-        self.name = name
-        self.phone = phone
+    regular_customers = db.relationship(
+        'Customer',
+        secondary=customer_courier,
+        back_populates='favorite_couriers'
+    )
 
-    def __repr__(self) -> str:
-        return f"Courier({self.courier_id}, '{self.name}', '{self.phone}')"
-
-    def put_into_dto(self) -> Dict[str, Any]:
-        return {
+    def put_into_dto(self, include_regular_customers: bool = True) -> Dict[str, Any]:
+        dto = {
             'courier_id': self.courier_id,
             'name': self.name,
             'phone': self.phone
         }
+        if include_regular_customers:
+            dto['regular_customers'] = [customer.put_into_dto(include_addresses=False, include_favorite_couriers= False) for customer in self.regular_customers]
+        return dto
+
 
     @staticmethod
     def create_from_dto(dto_dict: Dict[str, Any]) -> Courier:
