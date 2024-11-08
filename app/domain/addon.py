@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Dict, Any
-from app import db
+from app.extensions import db
 
 class Addon(db.Model):
     __tablename__ = 'addon'

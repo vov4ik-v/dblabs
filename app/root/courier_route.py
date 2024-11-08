@@ -1,7 +1,7 @@
 from http import HTTPStatus
 from flask import Blueprint, jsonify, Response, request, make_response
 
-from .. import db
+from app.extensions import db
 from ..controller import courier_controller
 from ..domain.courier import Courier, customer_courier
 from ..service import customer_service, courier_service

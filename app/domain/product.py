@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Dict, Any, List
-from app import db
+from app.extensions import db
 
 class Product(db.Model):
     __tablename__ = 'product'
@@ -32,7 +32,7 @@ class Product(db.Model):
         if include_ingredients:
             product_dto['ingredients'] = [ingredient.put_into_dto() for ingredient in self.ingredients]
         if not include_ingredients:
-            product_dto['url_for_product'] = f"http://127.0.0.1:5000/products/{self.product_id}"
+            product_dto['url_for_product'] = f"http://127.0.0.1:5001/products/{self.product_id}"
         return product_dto
 
     @staticmethod

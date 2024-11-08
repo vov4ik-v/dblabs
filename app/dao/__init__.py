@@ -3,6 +3,7 @@ from .courier_dao import CourierDAO
 from .customer_dao import CustomerDAO
 from .customer_address_dao import CustomerAddressDAO
 from .cancelled_order_dao import CancelledOrderDAO
+from .customer_feedback_dao import CustomerFeedbackDAO
 from .delivery_dao import DeliveryDAO
 from .product_dao import ProductDAO
 from .ingredient_dao import IngredientDAO
@@ -21,3 +22,4 @@ product_dao = ProductDAO()
 ingredient_dao = IngredientDAO()
 order_detail_dao = OrderDetailDAO()
 order_dao = OrderDAO()
+customer_feedback = CustomerFeedbackDAO()

@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Dict, Any
-from app import db
+from app.extensions import db
 
 class OrderDetail(db.Model):
     __tablename__ = 'order_detail'
@@ -37,7 +37,7 @@ class OrderDetail(db.Model):
             'addon': self.addon.put_into_dto() if include_product_addon and self.addon else {'addon_id': self.addon_id}
         }
         if not include_product_addon:
-            order_detail_dto['url_for_order_detail'] = f"http://127.0.0.1:5000/order_details/{self.order_detail_id}"
+            order_detail_dto['url_for_order_detail'] = f"http://127.0.0.1:5001/order_details/{self.order_detail_id}"
 
         return order_detail_dto
 

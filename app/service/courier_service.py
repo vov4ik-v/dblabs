@@ -1,7 +1,7 @@
 from .general_service import GeneralService
-from .. import db
 from ..dao import courier_dao, CustomerDAO, customer_dao
 from ..domain import Customer
+from app.extensions import db
 
 
 class CourierService(GeneralService):

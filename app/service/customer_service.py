@@ -1,7 +1,7 @@
 from sqlalchemy.orm import joinedload
 
 from .general_service import GeneralService
-from .. import db
+from app.extensions import db
 from ..dao import customer_dao, CourierDAO, courier_dao
 from ..domain import Customer, Courier
 

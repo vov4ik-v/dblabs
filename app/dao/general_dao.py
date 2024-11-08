@@ -3,7 +3,7 @@ from typing import List
 from sqlalchemy import inspect
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import joinedload, Mapper
-from app import db
+from app.extensions import db
 
 class GeneralDAO(ABC):
     _domain_type = None

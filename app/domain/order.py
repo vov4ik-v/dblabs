@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Dict, Any, List
-from app import db
+from app.extensions import db
 
 
 class Order(db.Model):
@@ -38,7 +38,7 @@ class Order(db.Model):
                 'customer_id': self.customer_id,
                 'address_id': self.address_id,
                 'status': self.status,
-                'url_for_order': f"http://127.0.0.1:5000/orders/{self.order_id}",
+                'url_for_order': f"http://127.0.0.1:5001/orders/{self.order_id}",
             }
 
         return {
