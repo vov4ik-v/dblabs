@@ -1,9 +1,69 @@
 from http import HTTPStatus
 from flask import Blueprint, jsonify, Response, request, make_response
+
+from .. import db
 from ..controller import courier_controller
-from ..domain.courier import Courier
+from ..domain.courier import Courier, customer_courier
+from ..service import customer_service, courier_service
 
 courier_bp = Blueprint('courier', __name__, url_prefix='/couriers')
+
+
+@courier_bp.route('/all/customers', methods=['GET'])
+def get_customer_courier_details() -> Response:
+    customer_courier_records = db.session.query(customer_courier).all()
+
+    details_dict = {}
+
+    for record in customer_courier_records:
+        customer = customer_service.find_by_id_with_relations(record.customer_id)
+        courier = courier_service.find_by_id_with_relations(record.courier_id)
+
+        if customer and courier:
+            details_dict[record.customer_courier_id] = {
+                "customer": {
+                    "customer_id": customer.customer_id,
+                    "name": customer.name,
+                    "phone": customer.phone,
+                    "email": customer.email,
+                },
+                "courier": {
+                    "courier_id": courier.courier_id,
+                    "name": courier.name,
+                    "phone": courier.phone
+                }
+            }
+
+    return make_response(jsonify(details_dict), HTTPStatus.OK)
+
+@courier_bp.route('/<int:customer_courier_id>/customers', methods=['GET'])
+def get_customer_courier_detail_by_id(customer_courier_id: int) -> Response:
+    record = db.session.query(customer_courier).filter_by(customer_courier_id=customer_courier_id).first()
+
+    if not record:
+        return make_response("Customer-Courier relationship not found", HTTPStatus.NOT_FOUND)
+
+    customer = customer_service.find_by_id_with_relations(record.customer_id)
+    courier = courier_service.find_by_id_with_relations(record.courier_id)
+
+    if customer and courier:
+        detail = {
+            "customer": {
+                "customer_id": customer.customer_id,
+                "name": customer.name,
+                "phone": customer.phone,
+                "email": customer.email,
+            },
+            "courier": {
+                "courier_id": courier.courier_id,
+                "name": courier.name,
+                "phone": courier.phone
+            }
+        }
+        return make_response(jsonify(detail), HTTPStatus.OK)
+
+    return make_response("Customer or Courier details not found", HTTPStatus.NOT_FOUND)
+
 
 @courier_bp.route('', methods=['GET'])
 def get_all_couriers() -> Response:

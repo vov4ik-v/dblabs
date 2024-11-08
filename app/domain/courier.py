@@ -4,6 +4,7 @@ from app import db
 
 customer_courier = db.Table(
     'customer_courier',  # Назва таблиці
+    db.Column("customer_courier_id", db.Integer, primary_key=True),
     db.Column('customer_id', db.Integer, db.ForeignKey('customer.customer_id'), primary_key=True),
     db.Column('courier_id', db.Integer, db.ForeignKey('courier.courier_id'), primary_key=True)
 )
