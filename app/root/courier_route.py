@@ -99,26 +99,25 @@ def remove_regular_customer(courier_id: int, customer_id: int) -> Response:
     return make_response("Regular customer removed", HTTPStatus.OK)
 
 @courier_bp.route('', methods=['POST'])
-def create_courier() -> Response:
+def create_courier():
     content = request.get_json()
-    courier = Courier.create_from_dto(content)
-    courier_controller.create(courier)
-    return make_response(jsonify(courier.put_into_dto(include_regular_customers=True)), HTTPStatus.CREATED)
+    response, status = courier_controller.create_courier(content)
+    return response, status
 
 @courier_bp.route('/<int:courier_id>', methods=['PUT'])
-def update_courier(courier_id: int) -> Response:
+def update_courier(courier_id: int):
     content = request.get_json()
-    courier = Courier.create_from_dto(content)
-    courier_controller.update(courier_id, courier)
-    return make_response("Courier updated", HTTPStatus.OK)
+    response, status = courier_controller.update_courier(courier_id, content)
+    return response, status
 
 @courier_bp.route('/<int:courier_id>', methods=['PATCH'])
-def patch_courier(courier_id: int) -> Response:
+def patch_courier(courier_id: int):
     content = request.get_json()
-    courier_controller.patch(courier_id, content)
-    return make_response("Courier updated", HTTPStatus.OK)
+    response, status = courier_controller.patch_courier(courier_id, content)
+    return response, status
+
 
 @courier_bp.route('/<int:courier_id>', methods=['DELETE'])
 def delete_courier(courier_id: int) -> Response:
-    courier_controller.delete(courier_id)
-    return make_response("Courier deleted", HTTPStatus.OK)
+    response, status_code = courier_controller.delete_courier(courier_id)
+    return make_response(jsonify(response), status_code)

@@ -7,3 +7,4 @@ class CourierDAO(GeneralDAO):
 
     def find_by_id(self, courier_id: int) -> Courier:
         return Courier.query.get(courier_id)
+

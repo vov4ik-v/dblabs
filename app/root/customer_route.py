@@ -32,7 +32,7 @@ def create_customer() -> Response:
     content = request.get_json()
     customer = Customer.create_from_dto(content)
     customer_controller.create(customer)
-    return make_response(jsonify(customer.put_into_dto(include_addresses=True, include_favorite_couriers=True)), HTTPStatus.CREATED)
+    return make_response(jsonify(customer.put_into_dto(include_addresses=False, include_favorite_couriers=False)), HTTPStatus.CREATED)
 
 @customer_bp.route('/<int:customer_id>', methods=['PUT'])
 def update_customer(customer_id: int) -> Response:

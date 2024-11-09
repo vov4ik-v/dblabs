@@ -8,6 +8,7 @@ from ..domain import Customer, Courier
 
 
 class CustomerService(GeneralService):
+    _dao = customer_dao
     def find_all(self, *relations):
         query = Customer.query
         for relation in relations:
