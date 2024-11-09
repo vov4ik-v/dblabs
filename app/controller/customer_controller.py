@@ -1,4 +1,4 @@
-
+from http import HTTPStatus
 from typing import List
 from .general_controller import GeneralController
 from ..domain.customer import Customer
@@ -20,3 +20,11 @@ class CustomerController(GeneralController):
 
     def remove_favorite_courier(self, customer_id: int, courier_id: int) -> None:
         self._service.remove_favorite_courier(customer_id, courier_id)
+
+    @staticmethod
+    def create_dynamic_tables():
+        try:
+            customer_service.create_dynamic_tables()
+            return {"message": "Dynamic tables created successfully"}, HTTPStatus.OK
+        except Exception as e:
+            return {"error": str(e)}, HTTPStatus.BAD_REQUEST

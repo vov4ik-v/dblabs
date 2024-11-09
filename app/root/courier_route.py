@@ -1,5 +1,6 @@
 from http import HTTPStatus
 from flask import Blueprint, jsonify, Response, request, make_response
+from sqlalchemy import text
 
 from app.extensions import db
 from ..controller import courier_controller
@@ -63,6 +64,18 @@ def get_customer_courier_detail_by_id(customer_courier_id: int) -> Response:
         return make_response(jsonify(detail), HTTPStatus.OK)
 
     return make_response("Customer or Courier details not found", HTTPStatus.NOT_FOUND)
+
+
+@courier_bp.route('/insert_10_couriers', methods=['POST'])
+def insert_10_couriers():
+    try:
+        # Використовуємо text() для обгортання SQL-запиту
+        db.session.execute(text("CALL insert_10_couriers()"))
+        db.session.commit()
+        return jsonify({"message": "10 couriers inserted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 400
 
 
 @courier_bp.route('', methods=['GET'])

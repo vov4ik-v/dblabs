@@ -51,3 +51,8 @@ def patch_customer(customer_id: int) -> Response:
 def delete_customer(customer_id: int) -> Response:
     customer_controller.delete(customer_id)
     return make_response("Customer deleted", HTTPStatus.OK)
+
+@customer_bp.route('/create_dynamic_tables', methods=['POST'])
+def create_dynamic_tables():
+    response, status = customer_controller.create_dynamic_tables()
+    return jsonify(response), status

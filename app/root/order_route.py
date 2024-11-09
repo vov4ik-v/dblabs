@@ -42,3 +42,18 @@ def patch_order(order_id: int) -> Response:
 def delete_order(order_id: int) -> Response:
     order_controller.delete(order_id)
     return make_response("Order deleted", HTTPStatus.OK)
+
+
+@order_bp.route('/calculate_action_for_price', methods=['POST'])
+def calculate_order_total_price():
+    data = request.get_json()
+    operation = data.get('operation')  # 'MAX', 'MIN', 'SUM', 'AVG'
+
+    if operation not in ['MAX', 'MIN', 'SUM', 'AVG']:
+        return jsonify({"error": "Invalid operation. Choose from 'MAX', 'MIN', 'SUM', 'AVG'."}), HTTPStatus.BAD_REQUEST
+
+    try:
+        result_data = order_controller.calculate_order_total_price(operation)
+        return make_response(jsonify(result_data), HTTPStatus.OK)
+    except Exception as e:
+        return jsonify({"error": str(e)}), HTTPStatus.BAD_REQUEST

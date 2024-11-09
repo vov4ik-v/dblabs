@@ -1,3 +1,4 @@
+from sqlalchemy import text
 from sqlalchemy.orm import joinedload
 
 from .general_service import GeneralService
@@ -33,3 +34,13 @@ class CustomerService(GeneralService):
         if courier in customer.favorite_couriers:
             customer.favorite_couriers.remove(courier)
             db.session.commit()
+
+    @staticmethod
+    def create_dynamic_tables():
+        try:
+            # Викликаємо процедуру для створення динамічних таблиць
+            db.session.execute(text("CALL create_dynamic_tables()"))
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            raise e
