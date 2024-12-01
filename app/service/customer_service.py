@@ -39,7 +39,6 @@ class CustomerService(GeneralService):
     @staticmethod
     def create_dynamic_tables():
         try:
-            # Викликаємо процедуру для створення динамічних таблиць
             db.session.execute(text("CALL create_dynamic_tables()"))
             db.session.commit()
         except Exception as e:

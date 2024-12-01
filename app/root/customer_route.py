@@ -1,3 +1,6 @@
+from sqlalchemy import text
+
+from app.extensions import db
 from ..domain.customer import Customer
 
 from http import HTTPStatus
@@ -6,6 +9,16 @@ from ..controller.customer_controller import CustomerController
 
 customer_bp = Blueprint('customer', __name__, url_prefix='/customers')
 customer_controller = CustomerController()
+
+@customer_bp.route('/insert_10_customers', methods=['POST'])
+def insert_10_couriers():
+    try:
+        db.session.execute(text("CALL insert_10_customers()"))
+        db.session.commit()
+        return jsonify({"message": "10 customers inserted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 400
 
 @customer_bp.route('', methods=['GET'])
 def get_all_customers() -> Response:

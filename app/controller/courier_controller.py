@@ -5,7 +5,7 @@ from flask import jsonify
 
 from .general_controller import GeneralController
 from ..domain import Courier
-from ..service import courier_service
+from ..service import courier_service, customer_service
 
 
 class CourierController(GeneralController):
@@ -22,6 +22,14 @@ class CourierController(GeneralController):
 
     def remove_regular_customer(self, courier_id: int, customer_id: int) -> None:
         self._service.remove_regular_customer(courier_id, customer_id)
+
+    @staticmethod
+    def add_customer_courier_relation(customer_name: str, courier_name: str) -> tuple:
+        response = customer_service.add_customer_courier_relation(customer_name, courier_name)
+
+        if "error" in response:
+            return response, HTTPStatus.BAD_REQUEST
+        return response, HTTPStatus.OK
 
     def delete_courier(self, courier_id: int) -> tuple[Any, HTTPStatus]:
         result = self._service.delete_courier(courier_id)

@@ -66,6 +66,17 @@ def get_customer_courier_detail_by_id(customer_courier_id: int) -> Response:
     return make_response("Customer or Courier details not found", HTTPStatus.NOT_FOUND)
 
 
+@courier_bp.route('/add_customer_courier_relation', methods=['POST'])
+def add_customer_courier_relation():
+    data = request.get_json()
+    customer_name = data.get('customer_name')
+    courier_name = data.get('courier_name')
+
+    # Викликаємо сервіс для додавання зв'язку та отримуємо відповідь з кодом статусу
+    response, status = courier_service.add_customer_courier_relation(customer_name, courier_name)
+
+    return jsonify(response), status
+
 @courier_bp.route('/insert_10_couriers', methods=['POST'])
 def insert_10_couriers():
     try:

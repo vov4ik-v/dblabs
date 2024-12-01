@@ -1,3 +1,6 @@
+from http import HTTPStatus
+
+from sqlalchemy import text
 from sqlalchemy.exc import DatabaseError
 
 from .general_service import GeneralService
@@ -23,6 +26,23 @@ class CourierService(GeneralService):
         if customer in courier.regular_customers:
             courier.regular_customers.remove(customer)
             db.session.commit()
+
+    @staticmethod
+    def add_customer_courier_relation(customer_name: str, courier_name: str) -> tuple:
+        try:
+            # Викликаємо процедуру з використанням параметрів
+            db.session.execute(
+                text("CALL add_customer_courier_relation(:customer_name, :courier_name)"),
+                {'customer_name': customer_name, 'courier_name': courier_name}
+            )
+            db.session.commit()
+            return {"message": "Customer-courier relation added successfully"}, HTTPStatus.OK
+        except DatabaseError as e:
+            db.session.rollback()
+            return {"error": str(e.orig)}, HTTPStatus.BAD_REQUEST
+        except Exception as ex:
+            db.session.rollback()
+            return {"error": f"Unexpected error: {str(ex)}"}, HTTPStatus.INTERNAL_SERVER_ERROR
 
     def create_courier(self, courier_data: dict) -> dict:
         try:

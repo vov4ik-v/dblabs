@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 from sqlalchemy import text
 from .general_service import GeneralService
@@ -22,3 +22,7 @@ class CustomerFeedbackService(GeneralService):
 
         # Повертає об'єкт як DTO, який можна серіалізувати
         return feedback.put_into_dto()
+
+    def get_all_feedbacks(self) -> List[Dict[str, Any]]:
+        feedbacks = self._dao.find_all()
+        return [feedback.put_into_dto() for feedback in feedbacks]
