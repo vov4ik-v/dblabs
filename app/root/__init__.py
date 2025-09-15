@@ -1,8 +1,9 @@
 from flask import Flask
+
+from .customer_feedback_route import customer_feedback_bp
 from .error_handler import err_handler_bp
 
 def register_routes(app: Flask) -> None:
-    # Реєструємо обробник помилок
     app.register_blueprint(err_handler_bp)
 
     from .addon_route import addon_bp
@@ -26,3 +27,4 @@ def register_routes(app: Flask) -> None:
     app.register_blueprint(ingredient_bp)
     app.register_blueprint(order_detail_bp)
     app.register_blueprint(order_bp)
+    app.register_blueprint(customer_feedback_bp)

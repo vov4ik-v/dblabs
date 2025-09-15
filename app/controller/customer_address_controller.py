@@ -12,5 +12,4 @@ class CustomerAddressController(GeneralController):
         return self.find_all(CustomerAddress.customer)
 
     def find_address_with_customer(self, address_id: int) -> object:
-        # Retrieve a single address with related customer eagerly loaded
-        return self.find_by_id(address_id, CustomerAddress.customer)
+        return self.find_by_id_with_relations(address_id, CustomerAddress.customer)

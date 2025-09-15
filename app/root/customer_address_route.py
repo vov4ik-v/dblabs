@@ -22,7 +22,7 @@ def create_customer_address() -> Response:
 @customer_address_bp.route('/<int:address_id>', methods=['GET'])
 def get_customer_address(address_id: int) -> Response:
     # Load customer relationship for a single customer address
-    customer_address = customer_address_controller.find_by_id(address_id, CustomerAddress.customer)
+    customer_address = customer_address_controller.find_by_id_with_relations(address_id, CustomerAddress.customer)
     return make_response(jsonify(customer_address), HTTPStatus.OK)
 
 @customer_address_bp.route('/<int:address_id>', methods=['PUT'])

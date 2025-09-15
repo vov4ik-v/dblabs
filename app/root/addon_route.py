@@ -21,7 +21,7 @@ def create_addon() -> Response:
 
 @addon_bp.route('/<int:addon_id>', methods=['GET'])
 def get_addon(addon_id: int) -> Response:
-    return make_response(jsonify(addon_controller.find_by_id(addon_id)), HTTPStatus.OK)
+    return make_response(jsonify(addon_controller.find_by_id_with_relations(addon_id)), HTTPStatus.OK)
 
 
 @addon_bp.route('/<int:addon_id>', methods=['PUT'])

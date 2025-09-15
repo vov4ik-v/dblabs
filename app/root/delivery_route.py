@@ -8,13 +8,11 @@ delivery_controller = DeliveryController()
 
 @delivery_bp.route('', methods=['GET'])
 def get_all_deliveries() -> Response:
-    # Використовуємо метод для отримання доставок з обмеженою інформацією про замовлення
     deliveries = delivery_controller.find_all_deliveries_with_relations()
     return make_response(jsonify(deliveries), HTTPStatus.OK)
 
 @delivery_bp.route('/<int:delivery_id>', methods=['GET'])
 def get_delivery(delivery_id: int) -> Response:
-    # Використовуємо метод для отримання доставки з обмеженою інформацією про замовлення
     delivery = delivery_controller.find_delivery_with_relations(delivery_id)
     return make_response(jsonify(delivery), HTTPStatus.OK)
 

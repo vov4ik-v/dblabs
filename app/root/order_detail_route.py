@@ -8,13 +8,11 @@ order_detail_controller = OrderDetailController()
 
 @order_detail_bp.route('', methods=['GET'])
 def get_all_order_details() -> Response:
-    # Використовуємо метод для отримання всіх OrderDetail з інформацією про продукт і доповнення
     order_details = order_detail_controller.find_all_order_details_with_relations()
     return make_response(jsonify(order_details), HTTPStatus.OK)
 
 @order_detail_bp.route('/<int:order_detail_id>', methods=['GET'])
 def get_order_detail(order_detail_id: int) -> Response:
-    # Використовуємо метод для отримання конкретного OrderDetail з інформацією про продукт і доповнення
     order_detail = order_detail_controller.find_order_detail_with_relations(order_detail_id)
     return make_response(jsonify(order_detail), HTTPStatus.OK)
 

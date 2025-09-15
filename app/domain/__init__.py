@@ -10,6 +10,8 @@ from .cancelled_order import CancelledOrder
 
 from .delivery import Delivery
 
+from .customer_feedback import CustomerFeedback
+
 from .product import Product
 
 from .ingredient import Ingredient

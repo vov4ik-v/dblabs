@@ -1,11 +1,10 @@
 from __future__ import annotations
 from typing import Dict, Any
-from app import db  # Імпорт SQLAlchemy з головного модуля
+from app.extensions import db
 
 class Addon(db.Model):
-    __tablename__ = 'addon'  # Ім'я таблиці в базі даних
+    __tablename__ = 'addon'
 
-    # Оголошення колонок
     addon_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)

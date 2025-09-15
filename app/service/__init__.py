@@ -1,3 +1,4 @@
+from .customer_feedback_service import CustomerFeedbackService
 from .order_service import OrderService
 from .addon_service import AddonService
 from .courier_service import CourierService
@@ -8,7 +9,7 @@ from .delivery_service import DeliveryService
 from .product_service import ProductService
 from .ingredient_service import IngredientService
 from .order_detail_service import OrderDetailService
-
+from ..dao import customer_feedback
 
 addon_service = AddonService()
 courier_service = CourierService()
@@ -20,3 +21,4 @@ product_service = ProductService()
 ingredient_service = IngredientService()
 order_detail_service = OrderDetailService()
 order_service = OrderService()
+customer_feedback_service =CustomerFeedbackService()

@@ -1,13 +1,9 @@
 import os
 import mysql.connector
 from flask import Flask, jsonify
-from flask_sqlalchemy import SQLAlchemy
 from app.config import Config
 from app.root import register_routes
-
-# Ініціалізація SQLAlchemy тільки один раз у цьому файлі
-db = SQLAlchemy()
-
+from app.extensions import db  # Імпортуємо db з extensions.py
 
 def create_app():
     app = Flask(__name__)

@@ -3,6 +3,7 @@ from .courier_controller import CourierController
 from .customer_controller import CustomerController
 from .customer_address_controller import CustomerAddressController
 from .cancelled_order_controller import CancelledOrderController
+from .customer_feedback_controller import CustomerFeedbackController
 from .delivery_controller import DeliveryController
 from .product_controller import ProductController
 from .ingredient_controller import IngredientController
@@ -21,3 +22,4 @@ product_controller = ProductController()
 ingredient_controller = IngredientController()
 order_detail_controller = OrderDetailController()
 order_controller = OrderController()
+customer_feedback_controller = CustomerFeedbackController()

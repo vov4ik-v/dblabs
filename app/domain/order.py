@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Dict, Any, List
-from app import db
+from app.extensions import db
 
 
 class Order(db.Model):
@@ -38,13 +38,13 @@ class Order(db.Model):
                 'customer_id': self.customer_id,
                 'address_id': self.address_id,
                 'status': self.status,
-                'url_for_order': f"http://127.0.0.1:5000/orders/{self.order_id}",
+                'url_for_order': f"http://127.0.0.1:5001/orders/{self.order_id}",
             }
 
         return {
             'order_id': self.order_id,
             'customer': self.customer.put_into_dto(
-                include_addresses=False) if self.customer and detailed else {
+                include_addresses=False, include_favorite_couriers = False) if self.customer and detailed else {
                 'customer_id': self.customer_id},
             'address': self.address.put_into_dto() if self.address else None,
             'order_date': self.order_date,

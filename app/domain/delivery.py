@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Dict, Any
-from app import db
+from app.extensions import db
 
 class Delivery(db.Model):
     __tablename__ = 'delivery'
@@ -12,7 +12,6 @@ class Delivery(db.Model):
     actual_delivery_time = db.Column(db.String(50), nullable=True)
     delivery_fee = db.Column(db.Float, nullable=False, default=0.0)
 
-    # Relationships
     order = db.relationship('Order', back_populates='delivery')
     courier = db.relationship('Courier', back_populates='deliveries')
 
@@ -30,8 +29,8 @@ class Delivery(db.Model):
     def put_into_dto(self) -> Dict[str, Any]:
         return {
             'delivery_id': self.delivery_id,
-            'order': self.order.put_into_dto(detailed=False) if self.order else None,  # Спрощена інформація про замовлення
-            'courier': self.courier.put_into_dto() if self.courier else None,  # Повна інформація про кур'єра
+            'order': self.order.put_into_dto(detailed=False) if self.order else None,
+            'courier': self.courier.put_into_dto() if self.courier else None,
             'expected_delivery_time': self.expected_delivery_time,
             'actual_delivery_time': self.actual_delivery_time,
             'delivery_fee': self.delivery_fee
