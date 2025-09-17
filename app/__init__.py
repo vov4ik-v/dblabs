@@ -5,41 +5,38 @@ from flask_sqlalchemy import SQLAlchemy
 from app.config import Config
 from app.root import register_routes
 
-# Ініціалізація SQLAlchemy тільки один раз у цьому файлі
 db = SQLAlchemy()
-
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Ініціалізація SQLAlchemy з додатком
     db.init_app(app)
 
-    # Виконуємо всі операції з базою даних у контексті додатку
     with app.app_context():
         create_database()
         db.create_all()
 
-    # Реєструємо маршрути
     register_routes(app)
 
-    @app.route('/')
+    @app.get("/")
     def home():
         return jsonify("Application is running"), 200
 
     return app
 
-
 def create_database():
-    # Використовуємо mysql.connector для створення бази даних
-    connection = mysql.connector.connect(
-        host='localhost',
-        user='root',
-        password='VASILIWIN2020',
-        database='mysql'
+    conn = mysql.connector.connect(
+        host=os.getenv("DB_HOST", "localhost"),
+        port=int(os.getenv("DB_PORT", "3306")),
+        user=os.getenv("DB_USER", "dbuser"),
+        password=os.getenv("DB_PASS", ""),
+        database="mysql",
     )
-    cursor = connection.cursor()
-    cursor.execute("CREATE DATABASE IF NOT EXISTS restaurant_delivery")
-    cursor.close()
-    connection.close()
+    cur = conn.cursor()
+    cur.execute(
+        f"CREATE DATABASE IF NOT EXISTS `{os.getenv('DB_NAME', 'restaurant_delivery')}` "
+        "DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+    )
+    cur.close()
+    conn.close()
