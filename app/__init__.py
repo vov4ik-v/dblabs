@@ -1,11 +1,14 @@
 import os
 import mysql.connector
+from flasgger import Swagger
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from app.config import Config
 from app.root import register_routes
+from flask_restx import Api
 
 db = SQLAlchemy()
+
 
 def create_app():
     app = Flask(__name__)
@@ -17,13 +20,17 @@ def create_app():
         create_database()
         db.create_all()
 
+    app.config["SWAGGER"] = {"title": "Restaurant Delivery API", "uiversion": 3}
+    Swagger(app)
+
     register_routes(app)
 
-    @app.get("/")
+    @app.route('/')
     def home():
         return jsonify("Application is running"), 200
 
     return app
+
 
 def create_database():
     conn = mysql.connector.connect(
