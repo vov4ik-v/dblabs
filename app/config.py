@@ -1,7 +1,7 @@
 import os
 
 class Config:
-    DB_USER = os.getenv("DB_USER", "dbuser")
+    DB_USER = os.getenv("DB_USER", "admin")
     DB_PASS = os.getenv("DB_PASS", "")
     DB_HOST = os.getenv("DB_HOST", "localhost")
     DB_PORT = os.getenv("DB_PORT", "3306")
