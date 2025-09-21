@@ -9,6 +9,9 @@ from app.api.spec import SWAGGER_TEMPLATE
 from app.config import Config
 from app.root import register_routes
 
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
+
 db = SQLAlchemy()
 
 def register_models():
