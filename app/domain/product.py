@@ -10,7 +10,6 @@ class Product(db.Model):
     type = db.Column(db.String(50), nullable=False)
     price = db.Column(db.Float, nullable=False)
 
-    # Relationships
     ingredients = db.relationship('Ingredient', back_populates='product')
     order_details = db.relationship('OrderDetail', back_populates='product')
 
@@ -24,7 +23,6 @@ class Product(db.Model):
         return f"Product({self.product_id}, '{self.name}', '{self.type}', {self.price})"
 
     def put_into_dto(self, include_ingredients: bool = True) -> Dict[str, Any]:
-        # Контроль за включенням інгредієнтів
         product_dto = {
             'product_id': self.product_id,
             'name': self.name,

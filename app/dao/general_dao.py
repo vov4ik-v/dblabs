@@ -9,9 +9,6 @@ class GeneralDAO(ABC):
     _domain_type = None
 
     def find_all(self, *relations) -> List[object]:
-        """
-        Retrieves all instances of _domain_type with specified relationships eagerly loaded.
-        """
         with db.session() as session:
             query = session.query(self._domain_type)
             for relation in relations:
@@ -19,9 +16,6 @@ class GeneralDAO(ABC):
             return query.all()
 
     def find_by_id_with_relations(self, key: int, *relations) -> object:
-        """
-        Retrieves a single instance by ID with specified relationships eagerly loaded.
-        """
         with db.session() as session:
             query = session.query(self._domain_type)
             for relation in relations:

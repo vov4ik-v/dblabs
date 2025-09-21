@@ -12,15 +12,11 @@ class GeneralController(ABC):
     _service = None
 
     def find_all(self, *relations) -> List[object]:
-        """
-        Retrieves all records with optional eager-loaded relationships.
-        """
+
         return [obj.put_into_dto() for obj in self._service.find_all(*relations)]
 
     def find_by_id(self, key: int, *relations) -> object:
-        """
-        Retrieves a single record by ID with optional eager-loaded relationships.
-        """
+
         obj = self._service.find_by_id_with_relations(key, *relations)
         if obj is None:
             abort(HTTPStatus.NOT_FOUND)

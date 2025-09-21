@@ -1,3 +1,4 @@
+# app/route/product_route.py
 from http import HTTPStatus
 from flask import Blueprint, jsonify, Response, request, make_response
 from ..controller.product_controller import ProductController
@@ -6,18 +7,21 @@ from ..domain import Product
 product_bp = Blueprint('product', __name__, url_prefix='/products')
 product_controller = ProductController()
 
+
 @product_bp.route('', methods=['GET'])
 def get_all_products() -> Response:
     """
     List all products (with ingredients)
     ---
-    tags: [product]
+    tags:
+      - Product
     responses:
       200:
         description: List of products with ingredients
-        content:
-          application/json:
-            schema: {type: array, items: {type: object}}
+        schema:
+          type: array
+          items:
+            type: object
     """
     products = product_controller.find_all_products_with_ingredients()
     return make_response(jsonify(products), HTTPStatus.OK)
@@ -28,15 +32,20 @@ def get_product(product_id: int) -> Response:
     """
     Get product by ID (with ingredients)
     ---
-    tags: [product]
+    tags:
+      - Product
     parameters:
       - in: path
         name: product_id
         required: true
-        schema: {type: integer}
+        type: integer
     responses:
-      200: {description: OK}
-      404: {description: Not found}
+      200:
+        description: OK
+        schema:
+          type: object
+      404:
+        description: Not found
     """
     product = product_controller.find_product_with_ingredients(product_id)
     return make_response(jsonify(product), HTTPStatus.OK)
@@ -47,25 +56,21 @@ def create_product() -> Response:
     """
     Create a new product
     ---
-    tags: [product]
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            required: [name, price]
-            properties:
-              name: {type: string, example: "Pizza Margherita"}
-              price: {type: number, example: 12.5}
-              ingredient_ids:
-                type: array
-                items: {type: integer}
-                example: [1,2,3]
+    tags:
+      - Product
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ProductCreate'
     responses:
-      201: {description: Created}
+      201:
+        description: Created
+        schema:
+          $ref: '#/definitions/Product'
     """
-    content = request.get_json()
+    content = request.get_json() or {}
     product = Product.create_from_dto(content)
     product_controller.create(product)
     return make_response(jsonify(product.put_into_dto()), HTTPStatus.CREATED)
@@ -76,25 +81,31 @@ def update_product(product_id: int) -> Response:
     """
     Replace product by ID
     ---
-    tags: [product]
+    tags:
+      - Product
     parameters:
       - in: path
         name: product_id
         required: true
-        schema: {type: integer}
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema: {type: object}
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ProductUpdate'
     responses:
-      200: {description: Updated}
-      404: {description: Not found}
+      200:
+        description: Updated
+        schema:
+          $ref: '#/definitions/Product'
+      404:
+        description: Not found
     """
-    content = request.get_json()
+    content = request.get_json() or {}
     product = Product.create_from_dto(content)
     product_controller.update(product_id, product)
-    return make_response("Product updated", HTTPStatus.OK)
+    updated = product_controller.find_product_with_ingredients(product_id)
+    return make_response(jsonify(updated), HTTPStatus.OK)
 
 
 @product_bp.route('/<int:product_id>', methods=['PATCH'])
@@ -102,24 +113,30 @@ def patch_product(product_id: int) -> Response:
     """
     Partially update product by ID
     ---
-    tags: [product]
+    tags:
+      - Product
     parameters:
       - in: path
         name: product_id
         required: true
-        schema: {type: integer}
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema: {type: object}
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ProductUpdate'
     responses:
-      200: {description: Updated}
-      404: {description: Not found}
+      200:
+        description: Updated
+        schema:
+          type: object
+      404:
+        description: Not found
     """
-    content = request.get_json()
+    content = request.get_json() or {}
     product_controller.patch(product_id, content)
-    return make_response("Product updated", HTTPStatus.OK)
+    updated = product_controller.find_product_with_ingredients(product_id)
+    return make_response(jsonify(updated), HTTPStatus.OK)
 
 
 @product_bp.route('/<int:product_id>', methods=['DELETE'])
@@ -127,16 +144,20 @@ def delete_product(product_id: int) -> Response:
     """
     Delete product by ID
     ---
-    tags: [product]
+    tags:
+      - Product
     parameters:
       - in: path
         name: product_id
         required: true
-        schema: {type: integer}
+        type: integer
     responses:
-      200: {description: Deleted}
-      404: {description: Not found}
+      200:
+        description: Deleted
+        schema:
+          $ref: '#/definitions/Message'
+      404:
+        description: Not found
     """
     product_controller.delete(product_id)
-    return make_response("Product deleted", HTTPStatus.OK)
-
+    return make_response(jsonify({"message": "Product deleted"}), HTTPStatus.OK)
