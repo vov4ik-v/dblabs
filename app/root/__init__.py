@@ -2,7 +2,6 @@ from flask import Flask
 from .error_handler import err_handler_bp
 
 def register_routes(app: Flask) -> None:
-    # Реєструємо обробник помилок
     app.register_blueprint(err_handler_bp)
 
     from .addon_route import addon_bp

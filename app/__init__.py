@@ -1,5 +1,7 @@
 import os
+
 import mysql.connector
+from flasgger import Swagger
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
@@ -9,9 +11,17 @@ from app.root import register_routes
 
 db = SQLAlchemy()
 
-# app/__init__.py (або де у вас create_app)
-from flasgger import Swagger
-
+def register_models():
+    from app.domain.addon import Addon
+    from app.domain.cancelled_order import CancelledOrder
+    from app.domain.courier import Courier
+    from app.domain.customer import Customer
+    from app.domain.customer_address import CustomerAddress
+    from app.domain.delivery import Delivery
+    from app.domain.ingredient import Ingredient
+    from app.domain.order import Order
+    from app.domain.order_detail import OrderDetail
+    from app.domain.product import Product
 
 def create_app():
     app = Flask(__name__)
@@ -23,6 +33,7 @@ def create_app():
 
     with app.app_context():
         create_database()
+        register_models()
         db.create_all()
 
     register_routes(app)
