@@ -1,4 +1,13 @@
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv, find_dotenv
+
+dotenv_path = find_dotenv()
+if dotenv_path:
+    load_dotenv(dotenv_path)
+else:
+    load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 import mysql.connector
 from flasgger import Swagger
@@ -9,10 +18,8 @@ from app.api.spec import SWAGGER_TEMPLATE
 from app.config import Config
 from app.root import register_routes
 
-from dotenv import load_dotenv, find_dotenv
-load_dotenv(find_dotenv())
-
 db = SQLAlchemy()
+
 
 def register_models():
     from app.domain.addon import Addon
@@ -25,6 +32,7 @@ def register_models():
     from app.domain.order import Order
     from app.domain.order_detail import OrderDetail
     from app.domain.product import Product
+
 
 def create_app():
     app = Flask(__name__)
