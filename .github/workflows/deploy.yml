@@ -24,11 +24,13 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            set -e
+            set -euo pipefail
             cd /home/ubuntu/dblabs
-            git pull origin master
+
+            git fetch origin
+            git reset --hard origin/master
+
             source venv/bin/activate
             pip install --upgrade pip
             if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-            flask --app app.py db upgrade
-            sudo systemctl restart flask-app
+            sudo systemctl restart flask-app          
