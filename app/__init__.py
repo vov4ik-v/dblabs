@@ -65,9 +65,5 @@ def create_database():
         database="mysql",
     )
     cur = conn.cursor()
-    cur.execute(
-        f"CREATE DATABASE IF NOT EXISTS `{os.getenv('DB_NAME', 'restaurant_delivery')}` "
-        "DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
-    )
     cur.close()
     conn.close()
