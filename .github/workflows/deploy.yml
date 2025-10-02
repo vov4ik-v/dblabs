@@ -2,35 +2,53 @@ name: Deploy to EC2
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    env:
+      EC2_HOST: ${{ secrets.EC2_HOST }}
+      EC2_USER: ${{ secrets.EC2_USER }}
+      EC2_KEY:  ${{ secrets.EC2_KEY }}
+
     steps:
-      - name: Checkout (not required for SSH-only flow)
+      - name: Checkout (optional)
         uses: actions/checkout@v4
 
-      - name: Add known_hosts
-        if: env.EC2_KNOWN_HOSTS == ''
+      - name: Validate required secrets
+        shell: bash
         run: |
+          set -euo pipefail
+          [ -n "${EC2_HOST:-}" ] || { echo "❌ Missing secret: EC2_HOST"; exit 1; }
+          [ -n "${EC2_USER:-}" ] || { echo "❌ Missing secret: EC2_USER"; exit 1; }
+          [ -n "${EC2_KEY:-}"  ] || { echo "❌ Missing secret: EC2_KEY";  exit 1; }
+          echo "✅ All required secrets are present."
+
+      - name: Prepare SSH known_hosts
+        shell: bash
+        run: |
+          set -euo pipefail
           mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+          chmod 700 ~/.ssh
+          # Додаємо host key, щоб уникнути запиту StrictHostKeyChecking
+          ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          chmod 600 ~/.ssh/known_hosts
 
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_KEY }}
+          host: ${{ env.EC2_HOST }}
+          username: ${{ env.EC2_USER }}
+          key: ${{ env.EC2_KEY }}
+          # port: 22            # розкоментуйте, якщо у вас нестандартний порт
           script: |
             set -euo pipefail
             cd /home/ubuntu/dblabs
-
             git fetch origin
             git reset --hard origin/master
-
             source venv/bin/activate
             pip install --upgrade pip
             if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-            sudo systemctl restart flask-app          
+            sudo systemctl restart flask-app
