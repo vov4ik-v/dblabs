@@ -42,9 +42,8 @@ jobs:
           host: ${{ env.EC2_HOST }}
           username: ${{ env.EC2_USER }}
           key: ${{ env.EC2_KEY }}
-          # port: 22            # розкоментуйте, якщо у вас нестандартний порт
           script: |
-            set -euo pipefail
+            set -euxo pipefail
             cd /home/ubuntu/dblabs
             git fetch origin
             git reset --hard origin/master
