@@ -16,9 +16,7 @@ jobs:
           set -euo pipefail
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-          # видаляємо старий ключ саме для цього хоста (якщо був)
           ssh-keygen -R "${{ secrets.EC2_HOST }}" 2>/dev/null || true
-          # додаємо актуальний ключ
           ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
           chmod 600 ~/.ssh/known_hosts
 
@@ -33,10 +31,8 @@ jobs:
             cd /home/ubuntu/dblabs
             git fetch origin
             git reset --hard origin/master
-            # якщо venv відсутній після перезапуску — створимо
             if [ ! -d venv ]; then python3 -m venv venv; fi
             source venv/bin/activate
             pip install --upgrade pip
             if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-            # рестарт без запиту пароля; якщо заборонено — відразу падіння
             sudo -n systemctl restart flask-app
