@@ -51,7 +51,7 @@ def create_app():
 
     @app.route('/')
     def home():
-        return jsonify("Application is running."), 200
+        return jsonify("Application is running. Hello world"), 200
 
     return app
 
